@@ -39,7 +39,7 @@
     "lit"
   ],
   "author": "Aten Design Group",
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "dependencies": {
     "lit": "^2.2.4"
   },
