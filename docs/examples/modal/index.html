@@ -1,0 +1,74 @@
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><mercury-dialog> ⌲ Examples ⌲ Modal</title>
+    <link rel="stylesheet" href="../../docs.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto+Mono">
+    <link href="../../prism-okaidia.css" rel="stylesheet" />
+    <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="/node_modules/lit/polyfill-support.js"></script>
+    <script type="module" src="../../mercury-dialog.bundled.js"></script>
+  </head>
+  <body>
+    
+<header>
+  <h1>&lt;mercury-dialog></h1>
+  <h2>A web component just for me.</h2>
+</header>
+    
+<nav>
+  <a href="../../">Home</a>
+  <a href="../">Examples</a>
+  <a href="../../api/">API</a>
+  <a href="../../install/">Install</a>
+</nav>
+    <div id="main-wrapper">
+      <main>
+        
+    <h1>Example: Modal Property</h1>
+    <section class="examples">
+      <nav class="collection">
+        <ul>
+          
+                  <li class=>
+                    <a href="../">A basic example</a>
+                  </li>
+                
+                  <li class=selected>
+                    <a href="">Modal</a>
+                  </li>
+                
+        </ul>
+      </nav>
+      <div>
+        <p><button id="openDialogButton">Open Dialog</button></p>
+<mercury-dialog id="mercuryDialog" open modal dialogTitle="My Dialog">
+  <p>Maybe in order to understand mankind, we have to look at the word itself: "Mankind". Basically, it's made up of two separate words - "mank" and "ind". What do these words mean ? It's a mystery, and that's why so is mankind.</p>
+</mercury-dialog>
+<script>
+  document.getElementById('openDialogButton')
+    .addEventListener('click', event => document.getElementById('mercuryDialog').show());
+</script>
+<h3>HTML</h3>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>openDialogButton<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Open Dialog<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mercury-dialog</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>mercuryDialog<span class="token punctuation">"</span></span> <span class="token attr-name">open</span> <span class="token attr-name">modal</span> <span class="token attr-name">dialogTitle</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>My Dialog<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Maybe in order to understand mankind, we have to look at the word itself: "Mankind". Basically, it's made up of two separate words - "mank" and "ind". What do these words mean ? It's a mystery, and that's why so is mankind.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>mercury-dialog</span><span class="token punctuation">></span></span></code></pre>
+<h3>JS</h3>
+<pre class="language-js"><code class="language-js">document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'openDialogButton'</span><span class="token punctuation">)</span><br>  <span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><br>    <span class="token string">'click'</span><span class="token punctuation">,</span><br>    <span class="token parameter">event</span> <span class="token operator">=></span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'mercuryDialog'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>  <span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
+      </div>
+    </section>
+  
+      </main>
+    </div>
+    
+<footer>
+  <p>
+    Made with
+    <a href="https://github.com/lit/lit-element-starter-ts">lit-starter-ts</a>
+  </p>
+</footer>
+  </body>
+</html>

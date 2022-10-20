@@ -1,10 +1,6 @@
-# LitElement TypeScript starter
+# <mercury-dialog>
 
-This project includes a sample component using LitElement with TypeScript.
-
-This template is generated from the `lit-starter-ts` package in [the main Lit
-repo](https://github.com/lit/lit). Issues and PRs for this template should be
-filed in that repo.
+A custom dialog web-component for Mercury Editor.
 
 ## Setup
 
@@ -132,3 +128,7 @@ For information on building application projects that include LitElement compone
 ## More information
 
 See [Get started](https://lit.dev/docs/getting-started/) on the Lit site for more information.
+
+This template is generated from the `lit-starter-ts` package in [the main Lit
+repo](https://github.com/lit/lit). Issues and PRs for this template should be
+filed in that repo.

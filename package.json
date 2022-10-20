@@ -1,15 +1,15 @@
 {
-  "name": "@lit/lit-starter-ts",
+  "name": "mercury-dialog",
   "private": true,
   "version": "1.0.4",
-  "description": "A simple web component",
-  "main": "my-element.js",
-  "module": "my-element.js",
+  "description": "A dialog web component for Mercury Editor",
+  "main": "mercury-dialog.js",
+  "module": "mercury-dialog.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "clean": "rimraf my-element.{d.ts,d.ts.map,js,js.map} test/my-element.{d.ts,d.ts.map,js,js.map} test/my-element_test.{d.ts,d.ts.map,js,js.map}",
+    "clean": "rimraf mercury-dialog.{d.ts,d.ts.map,js,js.map} test/mercury-dialog.{d.ts,d.ts.map,js,js.map} test/mercury-dialog_test.{d.ts,d.ts.map,js,js.map}",
     "lint": "npm run lint:lit-analyzer && npm run lint:eslint",
     "lint:eslint": "eslint 'src/**/*.ts'",
     "lint:lit-analyzer": "lit-analyzer",
@@ -18,7 +18,7 @@
     "docs:clean": "rimraf docs",
     "docs:gen": "eleventy --config=.eleventy.cjs",
     "docs:gen:watch": "eleventy --config=.eleventy.cjs --watch",
-    "docs:build": "rollup -c --file docs/my-element.bundled.js",
+    "docs:build": "rollup -c --file docs/mercury-dialog.bundled.js",
     "docs:assets": "cp node_modules/prismjs/themes/prism-okaidia.css docs/",
     "docs:serve": "wds --root-dir=docs --node-resolve --watch",
     "analyze": "cem analyze --litelement --globs \"src/**/*.ts\"",
@@ -30,7 +30,7 @@
     "test:watch": "wtr --watch",
     "test:prod": "MODE=prod wtr",
     "test:prod:watch": "MODE=prod wtr --watch",
-    "checksize": "rollup -c ; cat my-element.bundled.js | gzip -9 | wc -c ; rm my-element.bundled.js"
+    "checksize": "rollup -c ; cat mercury-dialog.bundled.js | gzip -9 | wc -c ; rm mercury-dialog.bundled.js"
   },
   "keywords": [
     "web-components",
@@ -38,7 +38,7 @@
     "typescript",
     "lit"
   ],
-  "author": "Google LLC",
+  "author": "Aten Design Group",
   "license": "BSD-3-Clause",
   "dependencies": {
     "lit": "^2.2.4"
@@ -66,5 +66,6 @@
     "rollup-plugin-terser": "^7.0.2",
     "typescript": "~4.7.4"
   },
+  "types": "mercury-dialog.d.ts",
   "customElements": "custom-elements.json"
 }

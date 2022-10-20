@@ -3,20 +3,67 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>&lt;my-element> Demo</title>
+    <title>&lt;mercury-dialog> Demo</title>
     <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../node_modules/lit/polyfill-support.js"></script>
-    <script type="module" src="../my-element.js"></script>
+    <script type="module" src="../mercury-dialog.js"></script>
     <style>
       p {
         border: solid 1px blue;
         padding: 8px;
       }
+
+      button {
+        background-color: papayawhip;
+      }
+
+      :root {
+        --bg-color: pink;
+      }
     </style>
   </head>
   <body>
-    <my-element>
-      <p>This is child content</p>
-    </my-element>
+    <mercury-dialog id="myDialog" dialogTitle="Test Dialog" moveable resizeable>
+      <p>This is child contents</p>
+
+      <button>Slotted Button</button>
+    </mercury-dialog>
+    <p>
+      <button id="openModalButton">Open Modal</button>
+      <button id="openDialogButton">Open Dialog</button>
+    </p>
+    <script>
+      const openModalButton = document.getElementById('openModalButton');
+      const openDialogButton = document.getElementById('openDialogButton');
+      const myDialog = document.getElementById('myDialog');
+
+      // "Update details" button opens the <dialog> modally
+      openModalButton.addEventListener('click', () => {
+        if (typeof myDialog.showModal === 'function') {
+          myDialog.showModal();
+        } else {
+          console.log(
+            'Sorry, the <dialog> API is not supported by this browser.'
+          );
+        }
+      });
+      // "Update details" button opens the <dialog> modally
+      openDialogButton.addEventListener('click', () => {
+        if (typeof myDialog.showModal === 'function') {
+          myDialog.show();
+        } else {
+          console.log(
+            'Sorry, the <dialog> API is not supported by this browser.'
+          );
+        }
+      });
+
+      // "Confirm" button of form triggers "close" on dialog because of [method="dialog"]
+      myDialog.addEventListener('close', () => {
+        console.log(
+          `${myDialog.returnValue} button clicked - ${new Date().toString()}`
+        );
+      });
+    </script>
   </body>
 </html>

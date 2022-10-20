@@ -5,18 +5,18 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><my-element> ⌲ Docs</title>
+    <title><mercury-dialog> ⌲ Docs</title>
     <link rel="stylesheet" href="../docs.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto+Mono">
     <link href="../prism-okaidia.css" rel="stylesheet" />
     <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="/node_modules/lit/polyfill-support.js"></script>
-    <script type="module" src="../my-element.bundled.js"></script>
+    <script type="module" src="../mercury-dialog.bundled.js"></script>
   </head>
   <body>
     
 <header>
-  <h1>&lt;my-element></h1>
+  <h1>&lt;mercury-dialog></h1>
   <h2>A web component just for me.</h2>
 </header>
     
@@ -31,7 +31,7 @@
         
      <h1>API</h1>
      
-       <h2>&lt;my-element></h2>
+       <h2>&lt;mercury-dialog></h2>
        <div>
          An example element.
        </div>
@@ -43,11 +43,31 @@
      </tr>
      
        <tr>
-         <td>name</td><td>The name to say "Hello" to.</td><td>string</td><td>'World'</td>
+         <td>open</td><td>Whether the dialog should be open or not.</td><td>boolean</td><td>false</td>
        </tr>
      
        <tr>
-         <td>count</td><td>The number of times the button has been clicked.</td><td>number</td><td>0</td>
+         <td>modal</td><td>Whether the dialog should be treated as a modal with a backdrop.</td><td>boolean</td><td>false</td>
+       </tr>
+     
+       <tr>
+         <td>moveable</td><td>Whether the dialog should be moveable.</td><td>boolean</td><td>false</td>
+       </tr>
+     
+       <tr>
+         <td>dock</td><td>The location in which the dialog should be docked.</td><td>string</td><td>'none'</td>
+       </tr>
+     
+       <tr>
+         <td>closeButton</td><td></td><td>boolean</td><td>true</td>
+       </tr>
+     
+       <tr>
+         <td>backdropOpacity</td><td></td><td>number</td><td>1</td>
+       </tr>
+     
+       <tr>
+         <td>title</td><td>The title shown in the dialog header when open.</td><td>string</td><td>''</td>
        </tr>
      
    </table>
@@ -60,15 +80,63 @@
      </tr>
      
        <tr>
-         <td>name</td><td>name</td><td>The name to say "Hello" to.</td><td>string</td><td>'World'</td>
+         <td>open</td><td>open</td><td>Whether the dialog should be open or not.</td><td>boolean</td><td>false</td>
        </tr>
      
        <tr>
-         <td>count</td><td>count</td><td>The number of times the button has been clicked.</td><td>number</td><td>0</td>
+         <td>modal</td><td>modal</td><td>Whether the dialog should be treated as a modal with a backdrop.</td><td>boolean</td><td>false</td>
+       </tr>
+     
+       <tr>
+         <td>moveable</td><td>moveable</td><td>Whether the dialog should be moveable.</td><td>boolean</td><td>false</td>
+       </tr>
+     
+       <tr>
+         <td>dock</td><td>dock</td><td>The location in which the dialog should be docked.</td><td>string</td><td>'none'</td>
+       </tr>
+     
+       <tr>
+         <td>closeButton</td><td>closeButton</td><td></td><td>boolean</td><td>true</td>
+       </tr>
+     
+       <tr>
+         <td>backdropOpacity</td><td>backdropOpacity</td><td></td><td>number</td><td>1</td>
+       </tr>
+     
+       <tr>
+         <td>title</td><td>title</td><td>The title shown in the dialog header when open.</td><td>string</td><td>''</td>
+       </tr>
+     
+       <tr>
+         <td>_dialog</td><td></td><td></td><td>HTMLDialogElement</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>_dragStartX</td><td></td><td></td><td>number</td><td>0</td>
+       </tr>
+     
+       <tr>
+         <td>_dragStartY</td><td></td><td></td><td>number</td><td>0</td>
+       </tr>
+     
+       <tr>
+         <td>_offsetTop</td><td></td><td></td><td>number</td><td>0</td>
+       </tr>
+     
+       <tr>
+         <td>_offsetLeft</td><td></td><td></td><td>number</td><td>0</td>
+       </tr>
+     
+       <tr>
+         <td>_onDragMouseUp</td><td></td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
+         <td>_onMouseMove</td><td></td><td></td><td></td><td></td>
        </tr>
      
    </table>
-   
+ 
        
    <h3>Methods</h3>
    <table>
@@ -77,19 +145,18 @@
      </tr>
      
        <tr>
-         <td>sayHello</td><td>
-   
-   <table>
-     <tr>
-       <th>Name</th><th>Description</th><th>Type</th>
-     </tr>
-     
-       <tr>
-         <td>name</td><td>The name to say "Hello" to</td><td>string</td>
+         <td>showModal</td><td></td><td>showModal
+Shows the dialog as a modal with a background overlay.</td><td></td>
        </tr>
      
-   </table>
- </td><td>Formats a greeting</td><td>string</td>
+       <tr>
+         <td>show</td><td></td><td>show
+Shows the dialog.</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>close</td><td></td><td>close
+Closes the dialog.</td><td></td>
        </tr>
      
    </table>
@@ -106,7 +173,7 @@
        </tr>
      
    </table>
-     
+ 
        
    <h3>Slots</h3>
    <table>
@@ -119,7 +186,7 @@
        </tr>
      
    </table>
-   
+ 
        
    <h3>CSS Shadow Parts</h3>
    <table>
