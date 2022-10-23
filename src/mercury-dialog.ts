@@ -27,31 +27,40 @@ export class MercuryDialog extends LitElement {
       border-width: var(--me-border-width, 1px);
       border-color: var(--me-border-color, #e5e5e5);
       padding: 0;
-    }
-
-    dialog[data-dock='right'] {
-      height: auto;
-      max-height: none;
-      width: 400px;
-      left: auto;
-      right: 0;
       position: fixed;
-      top: 0;
-      bottom: 0;
-      border-right-width: 0;
-      border-top-width: 0;
-      border-bottom-width: 0;
+      margin: auto;
+      height: fit-content;
+      inset: 0;
     }
 
     dialog[data-dock='left'] {
       height: auto;
+      inset: 0 auto 0 0;
+      margin: 0 auto 0 0;
       max-height: none;
-      width: 400px;
-      left: 0;
-      right: auto;
-      position: fixed;
-      top: 0;
-      bottom: 0;
+      width: var(--me-dialog-width, 400px);
+    }
+
+    dialog[data-dock='right'] {
+      height: auto;
+      inset: 0 0 0 auto;
+      margin: 0 0 0 auto;
+      max-height: none;
+      width: var(--me-dialog-width, 400px);
+    }
+
+    dialog[data-dock='bottom'] {
+      inset: auto 0 0 0;
+      margin: auto 0 0 0;
+      width: auto;
+      height: var(--me-dialog-height, 400px);
+    }
+
+    dialog[data-dock='top'] {
+      inset: 0 0 auto 0;
+      margin: 0 0 auto 0;
+      width: auto;
+      height: var(--me-dialog-height, 400px);
     }
 
     dialog::backdrop {
@@ -134,7 +143,6 @@ export class MercuryDialog extends LitElement {
         id="dialog"
         part="dialog"
         data-dock=${this.dock}
-        ?open=${this.open}
       >
         ${this.title || this.closeButton
           ? html`<header>
@@ -150,14 +158,14 @@ export class MercuryDialog extends LitElement {
                 : html``}
               ${this.dock === 'none'
                 ? html`<button
-                    @click=${() => this._setDock('right')}
+                    @click=${() => this.dock = 'right'}
                     part="dock-button"
                     id="dockButton"
                   >
                     Dock
                   </button>`
                 : html`<button
-                    @click=${() => this._setDock('none')}
+                    @click=${() => this.dock = 'none'}
                     part="undock-button"
                     id="undockButton"
                   >
@@ -185,8 +193,8 @@ export class MercuryDialog extends LitElement {
    * Shows the dialog as a modal with a background overlay.
    */
   public async showModal() {
-    this.open = true;
     this.modal = true;
+    this.open = true;
     (await this._dialog).showModal();
   }
 
@@ -195,8 +203,8 @@ export class MercuryDialog extends LitElement {
    * Shows the dialog.
    */
   public async show() {
-    this.open = true;
     this.modal = false;
+    this.open = true;
     (await this._dialog).show();
   }
 
@@ -204,20 +212,21 @@ export class MercuryDialog extends LitElement {
    * close
    * Closes the dialog.
    */
-  public close() {
+  public async close() {
     this.open = false;
-    this._dialog.close();
+    (await this._dialog).close();
   }
 
   private _onCloseClick() {
     this.open = false;
   }
 
-  private _onDragMouseDown(event: MouseEvent) {
+  private async _onDragMouseDown(event: MouseEvent) {
+    const dialog = await this._dialog;
     this._dragStartX = event.clientX;
     this._dragStartY = event.clientY;
-    this._offsetLeft = this._dialog.offsetLeft;
-    this._offsetTop = this._dialog.offsetTop;
+    this._offsetLeft = dialog.offsetLeft;
+    this._offsetTop = dialog.offsetTop;
 
     document.addEventListener('mouseup', this._onDragMouseUp);
     document.addEventListener('mousemove', this._onMouseMove);
@@ -228,36 +237,18 @@ export class MercuryDialog extends LitElement {
     document.removeEventListener('mousemove', this._onMouseMove);
   };
 
-  private _setDock(direction: string) {
-    this.dock = direction;
+  private _onMouseMove = async (event: MouseEvent) => {
+    const dialog = await this._dialog;
 
-    switch (direction) {
-      case 'right':
-        Object.assign(this._dialog.style, {
-          inset: '0 0 0 auto',
-        });
-        break;
-      case 'none':
-        Object.assign(this._dialog.style, {
-          inset: 'auto',
-        });
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  private _onMouseMove = (event: MouseEvent) => {
-    this._dialog.style.left = `${Math.min(
+    dialog.style.left = `${Math.min(
       Math.max(0, this._offsetLeft + event.clientX - this._dragStartX),
-      window.innerWidth - this._dialog.offsetWidth
+      window.innerWidth - dialog.offsetWidth
     )}px`;
-    this._dialog.style.top = `${
+    dialog.style.top = `${
       this._offsetTop + event.clientY - this._dragStartY
     }px`;
-    this._dialog.style.right = 'auto';
-    this._dialog.style.bottom = 'auto';
+    dialog.style.right = 'auto';
+    dialog.style.bottom = 'auto';
   };
 }
 
