@@ -30,8 +30,9 @@ export class MercuryDialog extends LitElement {
       padding: 0;
       position: fixed;
       margin: auto;
-      height: fit-content;
       inset: 0;
+      width: var(--me-dialog-width, fit-content);
+      height: var(--me-dialog-height, fit-content);
     }
 
     dialog[data-dock='left'] {
@@ -82,7 +83,6 @@ export class MercuryDialog extends LitElement {
       border-bottom-color: var(--me-border-color, #e5e5e5);
     }
 
-
     h2 {
       font-size: var(--me-label-font-size, 16px);
       line-height: var(--me-label-line-height, 1.1);
@@ -102,19 +102,18 @@ export class MercuryDialog extends LitElement {
     button {
       height: var(--me-dialog-button-height, 40px);
       width: var(--me-dialog-button-width, 40px);
-      background-color: red;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       border-radius: var(--me-dialog-button-radius, 3px);
-      background-color: #fff;
+      background-color: var(--me-dialog-button-background-color, #fff);
       transition: all .2s ease-out;
     }
 
     button:hover {
-      background-color: #efefef;
+      background-color: var(--me-dialog-button-background-color-hover, #efefef);
     }
 
     button i {
