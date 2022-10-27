@@ -81,6 +81,8 @@ export class MercuryDialog extends LitElement {
       border-bottom-style: var(--me-border-style, solid);
       border-bottom-width: var(--me-border-width, 1px);
       border-bottom-color: var(--me-border-color, #e5e5e5);
+      position: sticky;
+      top: 0;
     }
 
     h2 {
@@ -178,6 +180,12 @@ export class MercuryDialog extends LitElement {
   @property({type: String, reflect: true})
   dock = 'none';
 
+  /**
+   * The location in which the dialog should be docked.
+   */
+  @property({type: Boolean, reflect: true})
+  dockable = false;
+
   @property({type: Boolean, reflect: true})
   closeButton = true;
 
@@ -219,23 +227,25 @@ export class MercuryDialog extends LitElement {
                       <span>Drag</span>
                     </button>`
                   : html``}
-                ${this.dock === 'none'
-                  ? html`<button
-                      @click=${() => this.dock = 'right'}
-                      part="dock-button"
-                      id="dockButton"
-                    >
+                ${!this.dockable
+                  ? ''
+                  : this.dock === 'none'
+                    ? html`<button
+                        @click=${this._onDock()}
+                        part="dock-button"
+                        id="dockButton"
+                      >
+                        <i></i>
+                        <span>Dock</span>
+                      </button>`
+                    : html`<button
+                        @click=${this._onUnDock}
+                        part="undock-button"
+                        id="undockButton"
+                      >
                       <i></i>
-                      <span>Dock</span>
-                    </button>`
-                  : html`<button
-                      @click=${() => this.dock = 'none'}
-                      part="undock-button"
-                      id="undockButton"
-                    >
-                    <i></i>
-                    <span>Undock</span>
-                    </button>`}
+                      <span>Undock</span>
+                      </button>`}
                 <form method="dialog">
                   <button
                     @click=${this._onCloseClick}
@@ -300,6 +310,16 @@ export class MercuryDialog extends LitElement {
     document.addEventListener('mousemove', this._onMouseMove);
   }
 
+  private _onDock = (direction = 'right') => async () => {
+    const dialog = await this._dialog;
+    dialog.style.removeProperty('inset');
+    this.dock = direction;
+  };
+
+  private _onUnDock = async () => {
+    this.dock = 'none';
+  };
+
   private _onDragMouseUp = () => {
     document.removeEventListener('mouseup', this._onDragMouseUp);
     document.removeEventListener('mousemove', this._onMouseMove);
@@ -307,6 +327,7 @@ export class MercuryDialog extends LitElement {
 
   private _onMouseMove = async (event: MouseEvent) => {
     const dialog = await this._dialog;
+    this.dock = 'none';
 
     dialog.style.left = `${Math.min(
       Math.max(0, this._offsetLeft + event.clientX - this._dragStartX),
