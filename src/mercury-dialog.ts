@@ -75,9 +75,10 @@ export class MercuryDialog extends LitElement {
     }
 
     header {
+      background-color: var(--me-dialog-header-background-color, #fff);
       display: flex;
       justify-content: space-between;
-      padding: var(--me-space-inset, 8px);
+      padding: var(--me-dialog-header-space-inset-y, var(--me-space-inset-y, 5px)) var(--me-dialog-header-space-inset-x, var(--me-space-inset-x, 20px));
       border-bottom-style: var(--me-border-style, solid);
       border-bottom-width: var(--me-border-width, 1px);
       border-bottom-color: var(--me-border-color, #e5e5e5);
@@ -88,12 +89,18 @@ export class MercuryDialog extends LitElement {
     h2 {
       font-size: var(--me-label-font-size, 16px);
       line-height: var(--me-label-line-height, 1.1);
-      margin-inline-end: var(--me-space-inset, 8px);
+      margin-inline-end: var(--me-space-inset, .5em);
+    }
+
+    main {
+      background-color: var(--me-dialog-main-background-color, #fff);
+      padding: var(--me-dialog-main-space-inset-y, var(--me-space-inset-y, 20px)) var(--me-dialog-main-space-inset-y, var(--me-space-inset-y, 20px));
     }
 
     .buttons {
       display: flex;
       justify-content: flex-end;
+      margin-inline-end: -10px;
     }
 
     form[method='dialog'] {
@@ -149,10 +156,6 @@ export class MercuryDialog extends LitElement {
 
     #undockButton i {
       background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc.--><path d="M432 48H208c-17.7 0-32 14.33-32 32v16h-48V80c0-44.18 35.8-80 80-80h224c44.2 0 80 35.82 80 80v224c0 44.2-35.8 80-80 80h-16v-48h16c17.7 0 32-14.3 32-32V80c0-17.67-14.3-32-32-32zm-112 80c35.3 0 64 28.7 64 64v256c0 35.3-28.7 64-64 64H64c-35.35 0-64-28.7-64-64V192c0-35.3 28.65-64 64-64h256zM64 464h256c8.8 0 16-7.2 16-16V256H48v192c0 8.8 7.16 16 16 16z"/></svg>');
-    }
-
-    main {
-      padding: 20px;
     }
   `;
 
