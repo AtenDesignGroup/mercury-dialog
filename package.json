@@ -5,6 +5,10 @@
   "main": "mercury-dialog.js",
   "module": "mercury-dialog.js",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AtenDesignGroup/mercury-dialog"
+  },
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
