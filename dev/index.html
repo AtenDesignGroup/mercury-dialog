@@ -25,8 +25,11 @@
   <body>
     <mercury-dialog id="myDialog" title="Test Dialog" moveable dockable resizeable>
       <p>This is child contents</p>
-
-      <button>Slotted Button</button>
+      <form method="dialog">
+        <input name="testInput" />
+        <button value="cancel">Cancel</button>
+        <button id="confirm-btn" value="default">Confirm</button>
+      </form>
     </mercury-dialog>
     <p>
       <button id="openModalButton">Open Modal</button>
@@ -121,9 +124,17 @@
       });
 
       // "Confirm" button of form triggers "close" on dialog because of [method="dialog"]
-      myDialog.addEventListener('close', () => {
+      myDialog.addEventListener('close', (event) => {
         console.log(
-          `${myDialog.returnValue} button clicked - ${new Date().toString()}`
+          event,
+          `${myDialog.returnValue} closed - ${new Date().toString()}`
+        );
+      });
+
+      // "Confirm" button of form triggers "close" on dialog because of [method="dialog"]
+      myDialog.addEventListener('cancel', () => {
+        console.log(
+          `${myDialog.returnValue} canceled - ${new Date().toString()}`
         );
       });
     </script>

@@ -195,6 +195,9 @@ export class MercuryDialog extends LitElement {
   @property({type: Number, reflect: true})
   backdropOpacity = 1;
 
+  @property({type: String, attribute: false})
+  returnValue = 'tests';
+
   /**
    * The title shown in the dialog header when open.
    */
@@ -209,12 +212,33 @@ export class MercuryDialog extends LitElement {
   private _offsetTop = 0;
   private _offsetLeft = 0;
 
+  /**
+   *  Mimic the HTMLDialogElement close event.
+   */
+  async _handleClose () {
+    const dialog = await this._dialog;
+    this.returnValue = dialog.returnValue;
+    this.open = false;
+    this.dispatchEvent(new Event('close'));
+  }
+
+  /**
+   *  Mimic the HTMLDialogElement cancel event.
+   */
+  async _handleCancel () {
+    const dialog = await this._dialog;
+    this.returnValue = dialog.returnValue;
+    this.dispatchEvent(new Event('cancel'));
+  }
+
   override render() {
     return html`
       <dialog
         id="dialog"
         part="dialog"
         data-dock=${this.dock}
+        @close=${this._handleClose}
+        @cancel=${this._handleCancel}
       >
         ${this.title || this.closeButton
           ? html`<header>
@@ -294,7 +318,6 @@ export class MercuryDialog extends LitElement {
    * Closes the dialog.
    */
   public async close() {
-    this.open = false;
     (await this._dialog).close();
   }
 
