@@ -436,28 +436,7 @@ export class MercuryDialog extends LitElement {
     document.body.style.removeProperty('padding-right');
     document.body.style.removeProperty('padding-bottom');
     document.body.style.removeProperty('padding-left');
-
-    if (!this.push) {
-      return;
-    }
-
-    switch (this.dock) {
-      case 'top':
-        document.body.style.setProperty('padding-top', 'var(--me-dialog-offset-top, var(--me-dialog-height))');
-        break;
-      case 'right':
-        document.body.style.setProperty('padding-right', 'var(--me-dialog-offset-right, var(--me-dialog-width))');
-        break;
-      case 'bottom':
-        document.body.style.setProperty('padding-bottom', 'var(--me-dialog-offset-bottom, var(--me-dialog-height))');
-        break;
-      case 'left':
-        document.body.style.setProperty('padding-left', 'var(--me-dialog-offset-left, var(--me-dialog-width)');
-        break;
-
-      default:
-        break;
-    }
+    this._pushBody();
   }
 
   private _teardownBody = () => {
@@ -466,6 +445,28 @@ export class MercuryDialog extends LitElement {
     document.body.style.removeProperty('padding-right');
     document.body.style.removeProperty('padding-bottom');
     document.body.style.removeProperty('padding-left');
+    this._pushBody();
+  }
+
+  private _pushBody = () => {
+    [...document.querySelectorAll('[dock][push][open]')].forEach((dialog) => {
+      switch (dialog.getAttribute('dock')) {
+        case 'top':
+          document.body.style.setProperty('padding-top', 'var(--me-dialog-offset-top, var(--me-dialog-height))');
+          break;
+        case 'right':
+          document.body.style.setProperty('padding-right', 'var(--me-dialog-offset-right, var(--me-dialog-width))');
+          break;
+        case 'bottom':
+          document.body.style.setProperty('padding-bottom', 'var(--me-dialog-offset-bottom, var(--me-dialog-height))');
+          break;
+        case 'left':
+          document.body.style.setProperty('padding-left', 'var(--me-dialog-offset-left, var(--me-dialog-width)');
+          break;
+        default:
+          break;
+      }
+    });
   }
 
 }
