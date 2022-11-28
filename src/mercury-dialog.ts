@@ -28,6 +28,8 @@ export class MercuryDialog extends LitElement {
     :host {
       display: block;
       font-family: var(--me-font-family, sans-serif);
+      z-index: var(--me-dialog-z-index, 1000);
+      position: relative;
     }
 
     dialog {
@@ -41,6 +43,7 @@ export class MercuryDialog extends LitElement {
       inset: 0;
       width: var(--me-dialog-width, fit-content);
       height: var(--me-dialog-height, fit-content);
+      z-index: 1000;
     }
 
     dialog[open] {
