@@ -31,9 +31,18 @@
         <button id="confirm-btn" value="default">Confirm</button>
       </form>
     </mercury-dialog>
+    <mercury-dialog id="myDock" title="Test Dialog" dockable resizeable dock="right" push>
+      <p>This is child contents</p>
+      <form method="dialog">
+        <input name="testInput" />
+        <button value="cancel">Cancel</button>
+        <button id="confirm-btn" value="default">Confirm</button>
+      </form>
+    </mercury-dialog>
     <p>
       <button id="openModalButton">Open Modal</button>
       <button id="openDialogButton">Open Dialog</button>
+      <button id="openDockButton">Open Dock</button>
     </p>
     <!-- Quick & Dirty Style Guide -->
 <!-- Paste this into the body of a node to give you something to style. -->
@@ -100,6 +109,7 @@
     <script>
       const openModalButton = document.getElementById('openModalButton');
       const openDialogButton = document.getElementById('openDialogButton');
+      const openDockButton = document.getElementById('openDockButton');
       const myDialog = document.getElementById('myDialog');
 
       // "Update details" button opens the <dialog> modally
@@ -116,6 +126,16 @@
       openDialogButton.addEventListener('click', () => {
         if (typeof myDialog.showModal === 'function') {
           myDialog.show();
+        } else {
+          console.log(
+            'Sorry, the <dialog> API is not supported by this browser.'
+          );
+        }
+      });
+      // "Update details" button opens the <dialog> modally
+      openDockButton.addEventListener('click', () => {
+        if (typeof myDock.showModal === 'function') {
+          myDock.show();
         } else {
           console.log(
             'Sorry, the <dialog> API is not supported by this browser.'

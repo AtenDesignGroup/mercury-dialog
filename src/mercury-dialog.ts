@@ -7,6 +7,14 @@
 import {LitElement, html, css} from 'lit';
 import {customElement, property, queryAsync} from 'lit/decorators.js';
 
+enum DockableDirection {
+  None = "none",
+  Top = "top",
+  Right = "right",
+  Bottom = "bottom",
+  Left = "left",
+}
+
 /**
  * An example element.
  *
@@ -33,6 +41,11 @@ export class MercuryDialog extends LitElement {
       inset: 0;
       width: var(--me-dialog-width, fit-content);
       height: var(--me-dialog-height, fit-content);
+    }
+
+    dialog[open] {
+      display: flex;
+      flex-direction: column;
     }
 
     dialog[data-dock='left'] {
@@ -95,6 +108,7 @@ export class MercuryDialog extends LitElement {
     main {
       background-color: var(--me-dialog-main-background-color, #fff);
       padding: var(--me-dialog-main-space-inset-y, var(--me-space-inset-y, 20px)) var(--me-dialog-main-space-inset-y, var(--me-space-inset-y, 20px));
+      overflow-y: auto;
     }
 
     .buttons {
@@ -180,8 +194,18 @@ export class MercuryDialog extends LitElement {
   /**
    * The location in which the dialog should be docked.
    */
-  @property({type: String, reflect: true})
+  @property({
+    type: DockableDirection,
+    reflect: true,
+  })
   dock = 'none';
+
+  /**
+   * True if a docked dialog should push the page contents over
+   * rather than overlaying.
+   */
+  @property({type: Boolean, reflect: true})
+  push = false;
 
   /**
    * The location in which the dialog should be docked.
@@ -211,6 +235,8 @@ export class MercuryDialog extends LitElement {
   private _dragStartY = 0;
   private _offsetTop = 0;
   private _offsetLeft = 0;
+  // private _height = '400px';
+  private _width = 400;
 
   /**
    *  Mimic the HTMLDialogElement close event.
@@ -219,6 +245,7 @@ export class MercuryDialog extends LitElement {
     const dialog = await this._dialog;
     this.returnValue = dialog.returnValue;
     this.open = false;
+    this._teardownBody();
     this.dispatchEvent(new Event('close'));
   }
 
@@ -293,6 +320,16 @@ export class MercuryDialog extends LitElement {
     `;
   }
 
+  override updated(changedProperties) {
+    if (changedProperties.has('dock') || changedProperties.has('push')) {
+      this._setupBody();
+    }
+
+    if (changedProperties.has('modal')) {
+      this._setupBody();
+    }
+  }
+
   /**
    * showModal
    * Shows the dialog as a modal with a background overlay.
@@ -300,6 +337,11 @@ export class MercuryDialog extends LitElement {
   public async showModal() {
     this.modal = true;
     this.open = true;
+
+    if (this.isDocked()) {
+      this._onDock();
+    }
+
     (await this._dialog).showModal();
   }
 
@@ -310,6 +352,11 @@ export class MercuryDialog extends LitElement {
   public async show() {
     this.modal = false;
     this.open = true;
+
+    if (this.isDocked()) {
+      await this._onDock(this.dock)();
+    }
+
     (await this._dialog).show();
   }
 
@@ -318,7 +365,18 @@ export class MercuryDialog extends LitElement {
    * Closes the dialog.
    */
   public async close() {
+    if (this.isDocked()) {
+      await this._onDock(this.dock)();
+    }
     (await this._dialog).close();
+  }
+
+  /**
+   * isDocked
+   * True if docked.
+   */
+   public isDocked() {
+    return this.dock && this.dock !== 'none';
   }
 
   private _onCloseClick() {
@@ -340,6 +398,9 @@ export class MercuryDialog extends LitElement {
     const dialog = await this._dialog;
     dialog.style.removeProperty('inset');
     this.dock = direction;
+
+    document.documentElement.style.setProperty('--me-dialog-width', `${this._width}px`);
+    this._setupBody();
   };
 
   private _onUnDock = async () => {
@@ -365,6 +426,46 @@ export class MercuryDialog extends LitElement {
     dialog.style.right = 'auto';
     dialog.style.bottom = 'auto';
   };
+
+  private _setupBody = () => {
+    console.log('body setup', this.dock);
+    document.body.style.setProperty('transition', 'padding var(--me-dialog-duration, 200) var(--me-dialog-timing, ease-out)');
+    document.body.style.removeProperty('padding-top');
+    document.body.style.removeProperty('padding-right');
+    document.body.style.removeProperty('padding-bottom');
+    document.body.style.removeProperty('padding-left');
+
+    if (!this.push) {
+      return;
+    }
+
+    switch (this.dock) {
+      case 'top':
+        document.body.style.setProperty('padding-top', 'var(--me-dialog-offset-top, var(--me-dialog-height))');
+        break;
+      case 'right':
+        document.body.style.setProperty('padding-right', 'var(--me-dialog-offset-right, var(--me-dialog-width))');
+        break;
+      case 'bottom':
+        document.body.style.setProperty('padding-bottom', 'var(--me-dialog-offset-bottom, var(--me-dialog-height))');
+        break;
+      case 'left':
+        document.body.style.setProperty('padding-left', 'var(--me-dialog-offset-left, var(--me-dialog-width)');
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  private _teardownBody = () => {
+    document.body.style.removeProperty('transition');
+    document.body.style.removeProperty('padding-top');
+    document.body.style.removeProperty('padding-right');
+    document.body.style.removeProperty('padding-bottom');
+    document.body.style.removeProperty('padding-left');
+  }
+
 }
 
 declare global {
