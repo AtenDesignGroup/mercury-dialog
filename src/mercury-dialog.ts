@@ -428,7 +428,6 @@ export class MercuryDialog extends LitElement {
   };
 
   private _setupBody = () => {
-    console.log('body setup', this.dock);
     document.body.style.setProperty('transition', 'padding var(--me-dialog-duration, 200) var(--me-dialog-timing, ease-out)');
     document.body.style.removeProperty('padding-top');
     document.body.style.removeProperty('padding-right');
