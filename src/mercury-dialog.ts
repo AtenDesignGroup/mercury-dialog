@@ -28,7 +28,7 @@ export class MercuryDialog extends LitElement {
     :host {
       display: block;
       font-family: var(--me-font-family, sans-serif);
-      z-index: var(--me-dialog-z-index, 1000);
+      z-index: var(--me-dialog-z-index, 2500);
       position: relative;
     }
 
@@ -126,20 +126,33 @@ export class MercuryDialog extends LitElement {
     }
 
     button {
-      height: var(--me-dialog-button-height, 40px);
-      width: var(--me-dialog-button-width, 40px);
+      height: var(--me-dialog-icon-button-height, 40px);
+      width: var(--me-dialog-icon-button-width, 40px);
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-      border-radius: var(--me-dialog-button-radius, 3px);
-      background-color: var(--me-dialog-button-background-color, #fff);
+      border-radius: var(--me-dialog-icon-button-radius, 3px);
+      background-color: var(--me-dialog-icon-button-background-color, #fff);
       transition: all .2s ease-out;
     }
 
     button:hover {
-      background-color: var(--me-dialog-button-background-color-hover, #efefef);
+      background-color: var(--me-dialog-icon-button-background-color-hover, #efefef);
+    }
+
+    footer {
+      background-color: var(--me-dialog-footer-background-color, #fff);
+      padding: var(--me-dialog-footer-space-inset-y, var(--me-space-inset-y, 5px)) var(--me-dialog-footer-space-inset-x, var(--me-space-inset-x, 20px));
+      border-top-style: var(--me-border-style, solid);
+      border-top-width: var(--me-border-width, 1px);
+      border-top-color: var(--me-border-color, #e5e5e5);
+      position: sticky;
+      bottom: 0;
+    }
+
+    footer ::slotted(button) {
     }
 
     button i {
@@ -319,6 +332,9 @@ export class MercuryDialog extends LitElement {
           <main>
             <slot></slot>
           </main>
+          <footer>
+            <slot name="footer"></slot>
+          </footer>
         </dialog>
     `;
   }
@@ -432,7 +448,8 @@ export class MercuryDialog extends LitElement {
 
   private _setupBody = () => {
     document.body.style.setProperty('transition', 'padding var(--me-dialog-duration, 200) var(--me-dialog-timing, ease-out)');
-    document.body.style.removeProperty('padding-top');
+    // @todo This needs to work with Drupal's toolbar.
+    // document.body.style.removeProperty('padding-top');
     document.body.style.removeProperty('padding-right');
     document.body.style.removeProperty('padding-bottom');
     document.body.style.removeProperty('padding-left');
@@ -441,7 +458,8 @@ export class MercuryDialog extends LitElement {
 
   private _teardownBody = () => {
     document.body.style.removeProperty('transition');
-    document.body.style.removeProperty('padding-top');
+    // @todo This needs to work with Drupal's toolbar.
+    // document.body.style.removeProperty('padding-top');
     document.body.style.removeProperty('padding-right');
     document.body.style.removeProperty('padding-bottom');
     document.body.style.removeProperty('padding-left');
@@ -449,7 +467,7 @@ export class MercuryDialog extends LitElement {
   }
 
   private _pushBody = () => {
-    [...document.querySelectorAll('[dock][push][open]')].forEach((dialog) => {
+    [...document.querySelectorAll('mercury-dialog[dock][push][open]')].forEach((dialog) => {
       switch (dialog.getAttribute('dock')) {
         case 'top':
           document.body.style.setProperty('padding-top', 'var(--me-dialog-offset-top, var(--me-dialog-height))');

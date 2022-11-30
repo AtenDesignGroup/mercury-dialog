@@ -32,12 +32,14 @@
       </form>
     </mercury-dialog>
     <mercury-dialog id="myDock" title="Test Dialog" dockable resizeable dock="right" push>
+      <button slot="footer">first</button>
       <p>This is child contents</p>
       <form method="dialog">
         <input name="testInput" />
         <button value="cancel">Cancel</button>
         <button id="confirm-btn" value="default">Confirm</button>
       </form>
+      <button slot="footer">second</button>
     </mercury-dialog>
     <p>
       <button id="openModalButton">Open Modal</button>
