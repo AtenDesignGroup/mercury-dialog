@@ -68,8 +68,8 @@ export class MercuryDialog extends LitElement {
       margin: auto;
       inset: 0;
       overflow: auto;
-      width: var(--me-dialog-width, fit-content);
-      height: var(--me-dialog-height, fit-content);
+      width: var(--me-dialog-width, --me-dialog-width-default, fit-content);
+      height: var(--me-dialog-height, --me-dialog-height-default, fit-content);
       min-width: min-content;
       max-width: 100vw;
       z-index: 1000;
@@ -77,6 +77,10 @@ export class MercuryDialog extends LitElement {
 
     dialog.is-resizable {
       resize: both;
+    }
+
+    dialog.is-resize ::slotted(*) {
+      pointer-events: none;
     }
 
     dialog[open] {
@@ -89,7 +93,7 @@ export class MercuryDialog extends LitElement {
       inset: 0 auto 0 0;
       margin: 0 auto 0 0;
       max-height: none;
-      width: var(--me-dialog-width, 400px);
+      width: var(--me-dialog-width, --me-dialog-width-default, 400px);
     }
 
     dialog[data-dock='right'] {
@@ -97,21 +101,21 @@ export class MercuryDialog extends LitElement {
       inset: 0 0 0 auto;
       margin: 0 0 0 auto;
       max-height: none;
-      width: var(--me-dialog-width, 400px);
+      width: var(--me-dialog-width, --me-dialog-width-default, 400px);
     }
 
     dialog[data-dock='bottom'] {
       inset: auto 0 0 0;
       margin: auto 0 0 0;
       width: auto;
-      height: var(--me-dialog-height, 400px);
+      height: var(--me-dialog-height, --me-dialog-height-default, 400px);
     }
 
     dialog[data-dock='top'] {
       inset: 0 0 auto 0;
       margin: 0 0 auto 0;
       width: auto;
-      height: var(--me-dialog-height, 400px);
+      height: var(--me-dialog-height, --me-dialog-height-default, 400px);
     }
 
     dialog::backdrop {
@@ -341,6 +345,10 @@ export class MercuryDialog extends LitElement {
   @property({type: Boolean, reflect: true})
   resizable = false;
 
+  @property({type: DialogInteraction, attribute: false})
+  private _dialogInteraction = DialogInteraction.Idle;
+
+
   /**
    * The title shown in the dialog header when open.
    */
@@ -359,7 +367,6 @@ export class MercuryDialog extends LitElement {
   private _height = 400;
   private _width = 400;
   // private _dialogStatus = DialogStatus.Closed;
-  private _dialogInteraction = DialogInteraction.Idle;
   private _resizeDirection = ResizeDirection.None;
 
   _getResizeDirection () {
@@ -405,7 +412,7 @@ export class MercuryDialog extends LitElement {
         data-dock=${this.dock}
         @close=${this._handleClose}
         @cancel=${this._handleCancel}
-        class=${this.resizable && this.dock === 'none' ? 'is-resizable' : ''}
+        class=${[this.resizable && this.dock === 'none' ? 'is-resizable' : 'not-resizable', `is-${this._dialogInteraction}`].join(' ')}
       >
         ${this.title || this.closeButton
           ? html`<header>
