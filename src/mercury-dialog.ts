@@ -109,6 +109,7 @@ export class MercuryDialog extends LitElement {
     }
 
     main {
+      position: relative;
       background-color: var(--me-dialog-main-background-color, #fff);
       padding: var(--me-dialog-main-space-inset-y, var(--me-space-inset-y, 20px)) var(--me-dialog-main-space-inset-y, var(--me-space-inset-y, 20px));
       overflow-y: auto;
@@ -142,7 +143,7 @@ export class MercuryDialog extends LitElement {
       background-color: var(--me-dialog-icon-button-background-color-hover, #efefef);
     }
 
-    footer {
+    ::slotted([slot="footer"]) {
       background-color: var(--me-dialog-footer-background-color, #fff);
       padding: var(--me-dialog-footer-space-inset-y, var(--me-space-inset-y, 5px)) var(--me-dialog-footer-space-inset-x, var(--me-space-inset-x, 20px));
       border-top-style: var(--me-border-style, solid);
