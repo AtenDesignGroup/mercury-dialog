@@ -7,12 +7,37 @@
 import {LitElement, html, css} from 'lit';
 import {customElement, property, queryAsync} from 'lit/decorators.js';
 
+// enum DialogStatus {
+//   Closed = "closed",
+//   Open = "open",
+//   Modal = "modal",
+//   Dock = "dock",
+// }
+
+enum DialogInteraction {
+  Idle = "idle",
+  Move = "move",
+  Resize = "resize",
+}
+
 enum DockableDirection {
   None = "none",
   Top = "top",
   Right = "right",
   Bottom = "bottom",
   Left = "left",
+}
+
+enum ResizeDirection {
+  None = "none",
+  N = "n",
+  NE = "ne",
+  E = "e",
+  SE = "se",
+  S = "s",
+  SW = "sw",
+  W = "w",
+  NW = "nw",
 }
 
 /**
@@ -26,6 +51,7 @@ enum DockableDirection {
 export class MercuryDialog extends LitElement {
   static override styles = css`
     :host {
+      --me-resize-button-size: 4px;
       display: block;
       font-family: var(--me-font-family, sans-serif);
       z-index: var(--me-dialog-z-index, 2500);
@@ -41,9 +67,16 @@ export class MercuryDialog extends LitElement {
       position: fixed;
       margin: auto;
       inset: 0;
+      overflow: auto;
       width: var(--me-dialog-width, fit-content);
       height: var(--me-dialog-height, fit-content);
+      min-width: min-content;
+      max-width: 100vw;
       z-index: 1000;
+    }
+
+    dialog.is-resizable {
+      resize: both;
     }
 
     dialog[open] {
@@ -142,6 +175,70 @@ export class MercuryDialog extends LitElement {
       background-color: var(--me-dialog-icon-button-background-color-hover, #efefef);
     }
 
+    button[data-resize-dir] {
+      position: absolute;
+      opacity: .5;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      z-index: 10;
+    }
+
+    button[data-resize-dir]:after {
+      content: "";
+      display: block;
+      border: 0 #888 solid;
+    }
+
+    button[data-resize-dir="e"],
+    button[data-resize-dir="w"] {
+      transform: translateX(-50%);
+      cursor: ew-resize;
+      height: auto;
+      width: var(--me-resize-button-size);
+    }
+
+    button[data-resize-dir="e"]:after,
+    button[data-resize-dir="w"]:after {
+      height: 2em;
+      width: 3px;
+      border-left-width: 1px;
+      border-right-width: 1px;
+    }
+
+    button[data-resize-dir="e"] {
+      inset: 0 0 0 auto;
+    }
+
+    button[data-resize-dir="w"] {
+      inset: 0 auto 0 0;
+    }
+
+    button[data-resize-dir="n"],
+    button[data-resize-dir="s"] {
+      cursor: ns-resize;
+      height: var(--me-resize-button-size);
+      width: auto;
+    }
+
+    button[data-resize-dir="n"]:after,
+    button[data-resize-dir="s"]:after {
+      width: 2em;
+      height: 3px;
+      border-top-width: 1px;
+      border-bottom-width: 1px;
+    }
+
+    button[data-resize-dir="n"] {
+      inset: 0 0 auto 0;
+    }
+
+    button[data-resize-dir="s"] {
+      inset: auto 0 0 0;
+    }
+
     footer {
       background-color: var(--me-dialog-footer-background-color, #fff);
       padding: var(--me-dialog-footer-space-inset-y, var(--me-space-inset-y, 5px)) var(--me-dialog-footer-space-inset-x, var(--me-space-inset-x, 20px));
@@ -236,7 +333,13 @@ export class MercuryDialog extends LitElement {
   backdropOpacity = 1;
 
   @property({type: String, attribute: false})
-  returnValue = 'tests';
+  returnValue = '';
+
+  /**
+   * Whether or not the dialog is resizable.
+   */
+  @property({type: Boolean, reflect: true})
+  resizable = false;
 
   /**
    * The title shown in the dialog header when open.
@@ -249,10 +352,30 @@ export class MercuryDialog extends LitElement {
 
   private _dragStartX = 0;
   private _dragStartY = 0;
+  private _dragStartHeight = 0;
+  private _dragStartWidth = 0;
   private _offsetTop = 0;
   private _offsetLeft = 0;
-  // private _height = '400px';
+  private _height = 400;
   private _width = 400;
+  // private _dialogStatus = DialogStatus.Closed;
+  private _dialogInteraction = DialogInteraction.Idle;
+  private _resizeDirection = ResizeDirection.None;
+
+  _getResizeDirection () {
+    switch (this.dock) {
+      case 'top':
+        return ResizeDirection.S
+      case 'right':
+        return ResizeDirection.W
+      case 'bottom':
+        return ResizeDirection.N
+      case 'left':
+        return ResizeDirection.E
+      default:
+        return ResizeDirection.None
+    }
+  }
 
   /**
    *  Mimic the HTMLDialogElement close event.
@@ -282,6 +405,7 @@ export class MercuryDialog extends LitElement {
         data-dock=${this.dock}
         @close=${this._handleClose}
         @cancel=${this._handleCancel}
+        class=${this.resizable && this.dock === 'none' ? 'is-resizable' : ''}
       >
         ${this.title || this.closeButton
           ? html`<header>
@@ -289,7 +413,7 @@ export class MercuryDialog extends LitElement {
               <div class="buttons">
                 ${this.moveable
                   ? html`<button
-                      @mousedown=${this._onDragMouseDown}
+                      @mousedown=${this._onMoveMouseDown}
                       part="drag-button"
                       id="dragButton"
                     >
@@ -317,18 +441,29 @@ export class MercuryDialog extends LitElement {
                       <span>Undock</span>
                       </button>`}
                 <form method="dialog">
-                  <button
-                    @click=${this._onCloseClick}
-                    part="close-button"
-                    id="closeButton"
-                  >
-                    <i></i>
-                    <span>Close</span>
-                  </button>
+                  ${this.closeButton
+                    ? html`<button
+                      @click=${this._onCloseClick}
+                      part="close-button"
+                      id="closeButton"
+                    >
+                      <i></i>
+                      <span>Close</span>
+                    </button>`
+                    : html``}
                 </form>
               </div>
             </header>`
           : html``}
+          ${this.resizable && this.dock !== 'none'
+            ? html`<button
+            @mousedown=${this._onResizeMouseDown}
+            id="resizeButton"
+            data-resize-dir=${this._getResizeDirection()}
+            >
+              <span>Resize</span>
+            </button>`
+            : html``}
           <main>
             <slot></slot>
           </main>
@@ -402,20 +537,11 @@ export class MercuryDialog extends LitElement {
     this.open = false;
   }
 
-  private async _onDragMouseDown(event: MouseEvent) {
-    const dialog = await this._dialog;
-    this._dragStartX = event.clientX;
-    this._dragStartY = event.clientY;
-    this._offsetLeft = dialog.offsetLeft;
-    this._offsetTop = dialog.offsetTop;
-
-    document.addEventListener('mouseup', this._onDragMouseUp);
-    document.addEventListener('mousemove', this._onMouseMove);
-  }
-
   private _onDock = (direction = 'right') => async () => {
     const dialog = await this._dialog;
     dialog.style.removeProperty('inset');
+    dialog.style.removeProperty('height');
+    dialog.style.removeProperty('width');
     this.dock = direction;
 
     document.documentElement.style.setProperty('--me-dialog-width', `${this._width}px`);
@@ -426,26 +552,89 @@ export class MercuryDialog extends LitElement {
     this.dock = 'none';
   };
 
-  private _onDragMouseUp = () => {
-    document.removeEventListener('mouseup', this._onDragMouseUp);
-    document.removeEventListener('mousemove', this._onMouseMove);
-  };
+  private async _onResizeMouseDown(event: MouseEvent) {
+    this._dialogInteraction = DialogInteraction.Resize;
+    if (event.target instanceof HTMLButtonElement) {
+      const dir = event.target.getAttribute('data-resize-dir');
+      this._resizeDirection = dir as ResizeDirection;
+    }
+    this._onDragMouseDown(event);
+  }
 
-  private _onMouseMove = async (event: MouseEvent) => {
-    const dialog = await this._dialog;
+  private async _onMoveMouseDown(event: MouseEvent) {
+    this._dialogInteraction = DialogInteraction.Move;
     this.dock = 'none';
+    this._onDragMouseDown(event);
+  }
 
-    dialog.style.left = `${Math.min(
-      Math.max(0, this._offsetLeft + event.clientX - this._dragStartX),
-      window.innerWidth - dialog.offsetWidth
-    )}px`;
-    dialog.style.top = `${
-      this._offsetTop + event.clientY - this._dragStartY
-    }px`;
-    dialog.style.right = 'auto';
-    dialog.style.bottom = 'auto';
+  private async _onDragMouseDown(event: MouseEvent) {
+    const dialog = await this._dialog;
+    this._dragStartX = event.clientX;
+    this._dragStartY = event.clientY;
+    this._dragStartHeight = this._height;
+    this._dragStartWidth = this._width;
+    this._offsetLeft = dialog.offsetLeft;
+    this._offsetTop = dialog.offsetTop;
+
+    document.addEventListener('mouseup', this._onDragMouseUp);
+    document.addEventListener('mousemove', this._onDragMouseMove);
+  }
+
+  private _onDragMouseUp = () => {
+    this._dialogInteraction = DialogInteraction.Idle;
+    document.removeEventListener('mouseup', this._onDragMouseUp);
+    document.removeEventListener('mousemove', this._onDragMouseMove);
   };
 
+  private _onDragMouseMove = async (event: MouseEvent) => {
+    const dialog = await this._dialog;
+    const diffX = event.clientX - this._dragStartX;
+    const diffY = event.clientY - this._dragStartY;
+
+    switch (this._dialogInteraction) {
+      case DialogInteraction.Move:
+        dialog.style.left = `${
+          Math.min(
+            Math.max(0, this._offsetLeft + diffX),
+            window.innerWidth - dialog.offsetWidth
+        )}px`;
+        dialog.style.top = `${
+          this._offsetTop + diffY
+        }px`;
+        dialog.style.right = 'auto';
+        dialog.style.bottom = 'auto';
+        break;
+      case DialogInteraction.Resize:
+        switch (this._resizeDirection) {
+          case ResizeDirection.N:
+            this._height = Math.min(this._dragStartHeight - diffY, window.innerHeight);
+            document.documentElement.style.setProperty('--me-dialog-height', `${this._height}px`);
+            break;
+          case ResizeDirection.E:
+            this._width = Math.min(this._dragStartWidth + diffX, window.innerWidth);
+            document.documentElement.style.setProperty('--me-dialog-width', `${this._width}px`);
+            break;
+          case ResizeDirection.S:
+            console.log(this._height, this._dragStartHeight, diffY, window.innerHeight, event.clientY, this._dragStartY);
+            this._height = Math.min(this._dragStartHeight + diffY, window.innerHeight);
+            document.documentElement.style.setProperty('--me-dialog-height', `${this._height}px`);
+            break;
+          case ResizeDirection.W:
+            this._width = Math.min(this._dragStartWidth - diffX, window.innerWidth);
+            document.documentElement.style.setProperty('--me-dialog-width', `${this._width}px`);
+            break;
+          default:
+            break;
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  // @todo: Rather than attaching inline styles, consider dynamically creating and attaching a
+  // CSSStyleSheet element the managind styles through that. This should allow adding and removing
+  // overrides as needed without removing existing body styles.
   private _setupBody = () => {
     document.body.style.setProperty('transition', 'padding var(--me-dialog-duration, 200) var(--me-dialog-timing, ease-out)');
     // @todo This needs to work with Drupal's toolbar.
