@@ -23,7 +23,7 @@
     </style>
   </head>
   <body>
-    <mercury-dialog id="myDialog" title="Test Dialog" moveable dockable resizeable>
+    <mercury-dialog id="myDialog" title="Test Dialog" moveable dockable resizable push>
       <p>This is child contents</p>
       <form method="dialog">
         <input name="testInput" />
@@ -32,6 +32,7 @@
       </form>
     </mercury-dialog>
     <mercury-dialog id="myDock" title="Test Dialog" dockable resizeable dock="right" push>
+      <button slot="footer">first</button>
       <p>This is child contents</p>
       <form method="dialog">
         <input name="testInput" />
