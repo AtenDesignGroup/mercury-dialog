@@ -240,7 +240,7 @@ export class MercuryDialog extends LitElement {
       inset: auto 0 0 0;
     }
 
-    footer {
+    ::slotted([slot="footer"]) {
       background-color: var(--me-dialog-footer-background-color, #fff);
       padding: var(--me-dialog-footer-space-inset-y, var(--me-space-inset-y, 5px)) var(--me-dialog-footer-space-inset-x, var(--me-space-inset-x, 20px));
       border-top-style: var(--me-border-style, solid);
