@@ -51,7 +51,7 @@ enum ResizeDirection {
 export class MercuryDialog extends LitElement {
   static override styles = css`
     :host {
-      --me-resize-button-size: 4px;
+      --me-resize-button-size: 8px;
       display: block;
       font-family: var(--me-font-family, sans-serif);
       z-index: var(--me-dialog-z-index, 2500);
@@ -199,7 +199,6 @@ export class MercuryDialog extends LitElement {
 
     button[data-resize-dir="e"],
     button[data-resize-dir="w"] {
-      transform: translateX(-50%);
       cursor: ew-resize;
       height: auto;
       width: var(--me-resize-button-size);
@@ -215,10 +214,12 @@ export class MercuryDialog extends LitElement {
 
     button[data-resize-dir="e"] {
       inset: 0 0 0 auto;
+      justify-content: flex-start;
     }
 
     button[data-resize-dir="w"] {
       inset: 0 auto 0 0;
+      justify-content: flex-end;
     }
 
     button[data-resize-dir="n"],
@@ -238,10 +239,12 @@ export class MercuryDialog extends LitElement {
 
     button[data-resize-dir="n"] {
       inset: 0 0 auto 0;
+      align-items: flex-end;
     }
 
     button[data-resize-dir="s"] {
       inset: auto 0 0 0;
+      align-items: flex-start;
     }
 
     ::slotted([slot="footer"]) {
