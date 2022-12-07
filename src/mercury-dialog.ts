@@ -372,6 +372,18 @@ export class MercuryDialog extends LitElement {
   private _width = 400;
   // private _dialogStatus = DialogStatus.Closed;
   private _resizeDirection = ResizeDirection.None;
+  private styles = document.createElement('style');
+
+  override connectedCallback() {
+    super.connectedCallback();
+    this.styles.setAttribute('class', 'mercury-dialog-styles');
+    document.head.appendChild(this.styles);
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback()
+    this.styles.remove();
+  }
 
   _getResizeDirection () {
     switch (this.dock) {
@@ -395,7 +407,7 @@ export class MercuryDialog extends LitElement {
     const dialog = await this._dialog;
     this.returnValue = dialog.returnValue;
     this.open = false;
-    this._teardownBody();
+    this._pushBody();
     this.dispatchEvent(new Event('close'));
   }
 
@@ -486,12 +498,8 @@ export class MercuryDialog extends LitElement {
   }
 
   override updated(changedProperties) {
-    if (changedProperties.has('dock') || changedProperties.has('push')) {
-      this._setupBody();
-    }
-
-    if (changedProperties.has('modal')) {
-      this._setupBody();
+    if (changedProperties.has('dock') || changedProperties.has('push') || changedProperties.has('modal')) {
+      this._pushBody();
     }
   }
 
@@ -556,7 +564,7 @@ export class MercuryDialog extends LitElement {
     this.dock = direction;
 
     document.documentElement.style.setProperty('--me-dialog-width', `${this._width}px`);
-    this._setupBody();
+    this._pushBody();
   };
 
   private _onUnDock = async () => {
@@ -643,48 +651,39 @@ export class MercuryDialog extends LitElement {
     }
   };
 
-  // @todo: Rather than attaching inline styles, consider dynamically creating and attaching a
-  // CSSStyleSheet element the managind styles through that. This should allow adding and removing
-  // overrides as needed without removing existing body styles.
-  private _setupBody = () => {
-    document.body.style.setProperty('transition', 'padding var(--me-dialog-duration, 200) var(--me-dialog-timing, ease-out)');
-    // @todo This needs to work with Drupal's toolbar.
-    // document.body.style.removeProperty('padding-top');
-    document.body.style.removeProperty('padding-right');
-    document.body.style.removeProperty('padding-bottom');
-    document.body.style.removeProperty('padding-left');
-    this._pushBody();
-  }
-
-  private _teardownBody = () => {
-    document.body.style.removeProperty('transition');
-    // @todo This needs to work with Drupal's toolbar.
-    // document.body.style.removeProperty('padding-top');
-    document.body.style.removeProperty('padding-right');
-    document.body.style.removeProperty('padding-bottom');
-    document.body.style.removeProperty('padding-left');
-    this._pushBody();
-  }
-
+  /**
+   * Sets padding on the <body> element for to compensate for any
+   * push enabled docked dialogs.
+   */
   private _pushBody = () => {
+    const padding = {top: '', right: '', bottom: '', left: ''};
+
+    // Loop over all dialogs in case of multiples.
     [...document.querySelectorAll('mercury-dialog[dock][push][open]')].forEach((dialog) => {
-      switch (dialog.getAttribute('dock')) {
+      const dir = dialog.getAttribute('dock');
+      switch (dir) {
         case 'top':
-          document.body.style.setProperty('padding-top', 'var(--me-dialog-offset-top, var(--me-dialog-height))');
+          padding.top = 'padding-top: var(--me-dialog-offset-top, var(--me-dialog-height)) !important;';
           break;
         case 'right':
-          document.body.style.setProperty('padding-right', 'var(--me-dialog-offset-right, var(--me-dialog-width))');
+          padding.right = 'padding-right: var(--me-dialog-offset-right, var(--me-dialog-width)) !important;';
           break;
         case 'bottom':
-          document.body.style.setProperty('padding-bottom', 'var(--me-dialog-offset-bottom, var(--me-dialog-height))');
+          padding.bottom = 'padding-bottom: var(--me-dialog-offset-bottom, var(--me-dialog-height)) !important;';
           break;
         case 'left':
-          document.body.style.setProperty('padding-left', 'var(--me-dialog-offset-left, var(--me-dialog-width)');
+          padding.left = 'padding-left: var(--me-dialog-offset-left, var(--me-dialog-width)) !important;';
           break;
         default:
           break;
       }
     });
+
+    // Write the styles to a stylesheet specific to this dialog.
+    this.styles.innerHTML = `body {
+      transition: padding var(--me-dialog-duration, 200) var(--me-dialog-timing, ease-out);
+      ${Object.values(padding).filter(value => value).join('\n')}
+    }`;
   }
 
 }
