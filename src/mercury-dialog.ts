@@ -343,6 +343,12 @@ export class MercuryDialog extends LitElement {
   @property({type: String, attribute: false})
   returnValue = '';
 
+  @property({type: Number, reflect: true})
+  private height = 400;
+
+  @property({type: Number, reflect: true})
+  private width = 400;
+
   /**
    * Whether or not the dialog is resizable.
    */
@@ -368,8 +374,6 @@ export class MercuryDialog extends LitElement {
   private _dragStartWidth = 0;
   private _offsetTop = 0;
   private _offsetLeft = 0;
-  private _height = 400;
-  private _width = 400;
   // private _dialogStatus = DialogStatus.Closed;
   private _resizeDirection = ResizeDirection.None;
   private styles = document.createElement('style');
@@ -563,8 +567,8 @@ export class MercuryDialog extends LitElement {
     dialog.style.removeProperty('width');
     this.dock = direction;
 
-    document.documentElement.style.setProperty('--me-dialog-dock-height', `${this._height}px`);
-    document.documentElement.style.setProperty('--me-dialog-dock-width', `${this._width}px`);
+    document.documentElement.style.setProperty('--me-dialog-dock-height', `${this.height}px`);
+    document.documentElement.style.setProperty('--me-dialog-dock-width', `${this.width}px`);
     this._pushBody();
   };
 
@@ -591,8 +595,8 @@ export class MercuryDialog extends LitElement {
     const dialog = await this._dialog;
     this._dragStartX = event.clientX;
     this._dragStartY = event.clientY;
-    this._dragStartHeight = this._height;
-    this._dragStartWidth = this._width;
+    this._dragStartHeight = this.height;
+    this._dragStartWidth = this.width;
     this._offsetLeft = dialog.offsetLeft;
     this._offsetTop = dialog.offsetTop;
 
@@ -627,20 +631,20 @@ export class MercuryDialog extends LitElement {
       case DialogInteraction.Resize:
         switch (this._resizeDirection) {
           case ResizeDirection.N:
-            this._height = Math.min(this._dragStartHeight - diffY, window.innerHeight);
-            document.documentElement.style.setProperty('--me-dialog-dock-height', `${this._height}px`);
+            this.height = Math.min(this._dragStartHeight - diffY, window.innerHeight);
+            document.documentElement.style.setProperty('--me-dialog-dock-height', `${this.height}px`);
             break;
           case ResizeDirection.E:
-            this._width = Math.min(this._dragStartWidth + diffX, window.innerWidth);
-            document.documentElement.style.setProperty('--me-dialog-dock-width', `${this._width}px`);
+            this.width = Math.min(this._dragStartWidth + diffX, window.innerWidth);
+            document.documentElement.style.setProperty('--me-dialog-dock-width', `${this.width}px`);
             break;
           case ResizeDirection.S:
-            this._height = Math.min(this._dragStartHeight + diffY, window.innerHeight);
-            document.documentElement.style.setProperty('--me-dialog-dock-height', `${this._height}px`);
+            this.height = Math.min(this._dragStartHeight + diffY, window.innerHeight);
+            document.documentElement.style.setProperty('--me-dialog-dock-height', `${this.height}px`);
             break;
           case ResizeDirection.W:
-            this._width = Math.min(this._dragStartWidth - diffX, window.innerWidth);
-            document.documentElement.style.setProperty('--me-dialog-dock-width', `${this._width}px`);
+            this.width = Math.min(this._dragStartWidth - diffX, window.innerWidth);
+            document.documentElement.style.setProperty('--me-dialog-dock-width', `${this.width}px`);
             break;
           default:
             break;
