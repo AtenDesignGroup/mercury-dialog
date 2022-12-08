@@ -68,8 +68,8 @@ export class MercuryDialog extends LitElement {
       margin: auto;
       inset: 0;
       overflow: auto;
-      width: var(--me-dialog-width, --me-dialog-width-default, fit-content);
-      height: var(--me-dialog-height, --me-dialog-height-default, fit-content);
+      width: var(--me-dialog-width, var(--me-dialog-width-default, fit-content));
+      height: var(--me-dialog-height, var(--me-dialog-height-default, fit-content));
       min-width: min-content;
       max-width: 100vw;
       z-index: 1000;
@@ -93,7 +93,7 @@ export class MercuryDialog extends LitElement {
       inset: 0 auto 0 0;
       margin: 0 auto 0 0;
       max-height: none;
-      width: var(--me-dialog-width, --me-dialog-width-default, 400px);
+      width: var(--me-dialog-dock-width, var(--me-dialog-width-default, 400px));
     }
 
     dialog[data-dock='right'] {
@@ -101,21 +101,21 @@ export class MercuryDialog extends LitElement {
       inset: 0 0 0 auto;
       margin: 0 0 0 auto;
       max-height: none;
-      width: var(--me-dialog-width, --me-dialog-width-default, 400px);
+      width: var(--me-dialog-dock-width, var(--me-dialog-width-default, 400px));
     }
 
     dialog[data-dock='bottom'] {
       inset: auto 0 0 0;
       margin: auto 0 0 0;
       width: auto;
-      height: var(--me-dialog-height, --me-dialog-height-default, 400px);
+      height: var(--me-dialog-dock-height, var(--me-dialog-height-default, 400px));
     }
 
     dialog[data-dock='top'] {
       inset: 0 0 auto 0;
       margin: 0 0 auto 0;
       width: auto;
-      height: var(--me-dialog-height, --me-dialog-height-default, 400px);
+      height: var(--me-dialog-dock-height, var(--me-dialog-height-default, 400px));
     }
 
     dialog::backdrop {
@@ -563,7 +563,8 @@ export class MercuryDialog extends LitElement {
     dialog.style.removeProperty('width');
     this.dock = direction;
 
-    document.documentElement.style.setProperty('--me-dialog-width', `${this._width}px`);
+    document.documentElement.style.setProperty('--me-dialog-dock-height', `${this._height}px`);
+    document.documentElement.style.setProperty('--me-dialog-dock-width', `${this._width}px`);
     this._pushBody();
   };
 
@@ -627,20 +628,19 @@ export class MercuryDialog extends LitElement {
         switch (this._resizeDirection) {
           case ResizeDirection.N:
             this._height = Math.min(this._dragStartHeight - diffY, window.innerHeight);
-            document.documentElement.style.setProperty('--me-dialog-height', `${this._height}px`);
+            document.documentElement.style.setProperty('--me-dialog-dock-height', `${this._height}px`);
             break;
           case ResizeDirection.E:
             this._width = Math.min(this._dragStartWidth + diffX, window.innerWidth);
-            document.documentElement.style.setProperty('--me-dialog-width', `${this._width}px`);
+            document.documentElement.style.setProperty('--me-dialog-dock-width', `${this._width}px`);
             break;
           case ResizeDirection.S:
-            console.log(this._height, this._dragStartHeight, diffY, window.innerHeight, event.clientY, this._dragStartY);
             this._height = Math.min(this._dragStartHeight + diffY, window.innerHeight);
-            document.documentElement.style.setProperty('--me-dialog-height', `${this._height}px`);
+            document.documentElement.style.setProperty('--me-dialog-dock-height', `${this._height}px`);
             break;
           case ResizeDirection.W:
             this._width = Math.min(this._dragStartWidth - diffX, window.innerWidth);
-            document.documentElement.style.setProperty('--me-dialog-width', `${this._width}px`);
+            document.documentElement.style.setProperty('--me-dialog-dock-width', `${this._width}px`);
             break;
           default:
             break;
@@ -659,25 +659,25 @@ export class MercuryDialog extends LitElement {
     const padding = {top: '', right: '', bottom: '', left: ''};
 
     // Loop over all dialogs in case of multiples.
-    [...document.querySelectorAll('mercury-dialog[dock][push][open]')].forEach((dialog) => {
-      const dir = dialog.getAttribute('dock');
-      switch (dir) {
+    if (this.open && this.push) {
+      switch (this.dock) {
         case 'top':
-          padding.top = 'padding-top: var(--me-dialog-offset-top, var(--me-dialog-height)) !important;';
+          padding.top = 'padding-top: var(--me-dialog-offset-top, var(--me-dialog-dock-height)) !important;';
           break;
         case 'right':
-          padding.right = 'padding-right: var(--me-dialog-offset-right, var(--me-dialog-width)) !important;';
+          padding.right = 'padding-right: var(--me-dialog-offset-right, var(--me-dialog-dock-width)) !important;';
           break;
         case 'bottom':
-          padding.bottom = 'padding-bottom: var(--me-dialog-offset-bottom, var(--me-dialog-height)) !important;';
+          padding.bottom = 'padding-bottom: var(--me-dialog-offset-bottom, var(--me-dialog-dock-height)) !important;';
           break;
         case 'left':
-          padding.left = 'padding-left: var(--me-dialog-offset-left, var(--me-dialog-width)) !important;';
+          padding.left = 'padding-left: var(--me-dialog-offset-left, var(--me-dialog-dock-width)) !important;';
           break;
         default:
           break;
       }
-    });
+    }
+
 
     // Write the styles to a stylesheet specific to this dialog.
     this.styles.innerHTML = `body {
