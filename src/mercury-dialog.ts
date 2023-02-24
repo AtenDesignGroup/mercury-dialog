@@ -334,8 +334,8 @@ export class MercuryDialog extends LitElement {
   @property({type: Boolean, reflect: true})
   dockable = false;
 
-  @property({type: Boolean, reflect: true})
-  closeButton = true;
+  @property({type: Boolean, reflect: true, attribute: 'hide-close-button'})
+  hideCloseButton = false;
 
   @property({type: Number, reflect: true})
   backdropOpacity = 1;
@@ -430,11 +430,12 @@ export class MercuryDialog extends LitElement {
         id="dialog"
         part="dialog"
         data-dock=${this.dock}
+        ?open=${this.open}
         @close=${this._handleClose}
         @cancel=${this._handleCancel}
-        class=${[this.resizable && this.dock === 'none' ? 'is-resizable' : 'not-resizable', `is-${this._dialogInteraction}`].join(' ')}
+        class=${[this.resizable && (this.dock === 'none' || !this.dock) ? 'is-resizable' : 'not-resizable', `is-${this._dialogInteraction}`].join(' ')}
       >
-        ${this.title || this.closeButton
+        ${this.title || !this.hideCloseButton
           ? html`<header>
               ${this.title ? html`<h2>${this.title}</h2>` : html``}
               <div class="buttons">
@@ -468,7 +469,7 @@ export class MercuryDialog extends LitElement {
                       <span>Undock</span>
                       </button>`}
                 <form method="dialog">
-                  ${this.closeButton
+                  ${!this.hideCloseButton
                     ? html`<button
                       @click=${this._onCloseClick}
                       part="close-button"

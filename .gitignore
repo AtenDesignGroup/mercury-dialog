@@ -9,3 +9,7 @@ mercury-dialog.d.ts
 mercury-dialog.d.ts.map
 # only generated for size check
 mercury-dialog.bundled.js
+
+/storybook/node_modules/
+/storybook-static/
+```
