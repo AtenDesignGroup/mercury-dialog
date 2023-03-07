@@ -54,7 +54,7 @@ export class MercuryDialog extends LitElement {
       --me-resize-button-size: 8px;
       display: block;
       font-family: var(--me-font-family, sans-serif);
-      z-index: var(--me-dialog-z-index, 2500);
+      z-index: var(--me-dialog-z-index, 1255);
       position: relative;
     }
 
@@ -70,7 +70,7 @@ export class MercuryDialog extends LitElement {
       overflow: auto;
       width: var(--me-dialog-width, var(--me-dialog-width-default, fit-content));
       height: var(--me-dialog-height, var(--me-dialog-height-default, fit-content));
-      min-width: min-content;
+      min-width: var(--me-dialog-min-width, min-content);
       max-width: 100vw;
       z-index: 1000;
     }
@@ -358,7 +358,6 @@ export class MercuryDialog extends LitElement {
   @property({type: DialogInteraction, attribute: false})
   private _dialogInteraction = DialogInteraction.Idle;
 
-
   /**
    * The title shown in the dialog header when open.
    */
@@ -430,7 +429,6 @@ export class MercuryDialog extends LitElement {
         id="dialog"
         part="dialog"
         data-dock=${this.dock}
-        ?open=${this.open}
         @close=${this._handleClose}
         @cancel=${this._handleCancel}
         class=${[this.resizable && (this.dock === 'none' || !this.dock) ? 'is-resizable' : 'not-resizable', `is-${this._dialogInteraction}`].join(' ')}
@@ -553,7 +551,7 @@ export class MercuryDialog extends LitElement {
    * isDocked
    * True if docked.
    */
-   public isDocked() {
+  public isDocked() {
     return this.dock && this.dock !== 'none';
   }
 
@@ -682,7 +680,6 @@ export class MercuryDialog extends LitElement {
           break;
       }
     }
-
 
     // Write the styles to a stylesheet specific to this dialog.
     this.styles.innerHTML = `body {
