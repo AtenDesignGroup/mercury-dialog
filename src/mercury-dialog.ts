@@ -71,7 +71,8 @@ export class MercuryDialog extends LitElement {
       width: var(--me-dialog-width, var(--me-dialog-width-default, fit-content));
       height: var(--me-dialog-height, var(--me-dialog-height-default, fit-content));
       min-width: var(--me-dialog-min-width, min-content);
-      max-width: 100vw;
+      max-width: calc(100vw - var(--me-dialog-viewport-offset, 40px));
+      max-height: calc(100vh - var(--me-dialog-viewport-offset, 40px));
       z-index: 1000;
     }
 
@@ -93,6 +94,7 @@ export class MercuryDialog extends LitElement {
       inset: 0 auto 0 0;
       margin: 0 auto 0 0;
       max-height: none;
+      max-width: 100vw;
       width: var(--me-dialog-dock-width, var(--me-dialog-width-default, 400px));
     }
 
@@ -101,6 +103,7 @@ export class MercuryDialog extends LitElement {
       inset: 0 0 0 auto;
       margin: 0 0 0 auto;
       max-height: none;
+      max-width: 100vw;
       width: var(--me-dialog-dock-width, var(--me-dialog-width-default, 400px));
     }
 
@@ -108,6 +111,7 @@ export class MercuryDialog extends LitElement {
       inset: auto 0 0 0;
       margin: auto 0 0 0;
       width: auto;
+      max-width: 100vw;
       height: var(--me-dialog-dock-height, var(--me-dialog-height-default, 400px));
     }
 
@@ -115,6 +119,7 @@ export class MercuryDialog extends LitElement {
       inset: 0 0 auto 0;
       margin: 0 0 auto 0;
       width: auto;
+      max-width: 100vw;
       height: var(--me-dialog-dock-height, var(--me-dialog-height-default, 400px));
     }
 
@@ -137,6 +142,9 @@ export class MercuryDialog extends LitElement {
       border-bottom-color: var(--me-border-color, #e5e5e5);
       position: sticky;
       top: 0;
+    }
+    dialog.is-moveable header {
+      cursor: grab;
     }
 
     h2 {
@@ -259,6 +267,9 @@ export class MercuryDialog extends LitElement {
 
     footer ::slotted(button) {
     }
+    dialog.is-moveable footer {
+      cursor: grab;
+    }
 
     button i {
       background-position: center;
@@ -311,6 +322,12 @@ export class MercuryDialog extends LitElement {
    */
   @property({type: Boolean, reflect: true})
   moveable = false;
+
+  /**
+   * Whether to render a move button.
+   */
+  @property({type: Boolean, reflect: true})
+  moveBtn = false;
 
   /**
    * The location in which the dialog should be docked.
@@ -431,13 +448,13 @@ export class MercuryDialog extends LitElement {
         data-dock=${this.dock}
         @close=${this._handleClose}
         @cancel=${this._handleCancel}
-        class=${[this.resizable && (this.dock === 'none' || !this.dock) ? 'is-resizable' : 'not-resizable', `is-${this._dialogInteraction}`].join(' ')}
+        class=${[this.moveable && 'is-moveable', this.resizable && (this.dock === 'none' || !this.dock) ? 'is-resizable' : 'not-resizable', `is-${this._dialogInteraction}`].join(' ')}
       >
         ${this.title || !this.hideCloseButton
-          ? html`<header>
+          ? html`<header @mousedown=${this._onMoveMouseDown}>
               ${this.title ? html`<h2>${this.title}</h2>` : html``}
               <div class="buttons">
-                ${this.moveable
+                ${this.moveable && this.moveBtn
                   ? html`<button
                       @mousedown=${this._onMoveMouseDown}
                       part="drag-button"
@@ -493,7 +510,7 @@ export class MercuryDialog extends LitElement {
           <main>
             <slot></slot>
           </main>
-          <footer>
+          <footer @mousedown=${this._onMoveMouseDown}>
             <slot name="footer"></slot>
           </footer>
         </dialog>
@@ -585,9 +602,11 @@ export class MercuryDialog extends LitElement {
   }
 
   private async _onMoveMouseDown(event: MouseEvent) {
-    this._dialogInteraction = DialogInteraction.Move;
-    this.dock = 'none';
-    this._onDragMouseDown(event);
+    if (this.moveable) {
+      this._dialogInteraction = DialogInteraction.Move;
+      this.dock = 'none';
+      this._onDragMouseDown(event);
+    }
   }
 
   private async _onDragMouseDown(event: MouseEvent) {
