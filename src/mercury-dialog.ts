@@ -144,6 +144,7 @@ export class MercuryDialog extends LitElement {
       position: sticky;
       top: 0;
     }
+
     dialog.is-moveable header {
       cursor: grab;
     }
