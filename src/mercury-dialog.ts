@@ -539,6 +539,7 @@ export class MercuryDialog extends LitElement {
     }
 
     (await this._dialog).showModal();
+    this.dispatchEvent(new Event('open'));
   }
 
   /**
@@ -554,6 +555,7 @@ export class MercuryDialog extends LitElement {
     }
 
     (await this._dialog).show();
+    this.dispatchEvent(new Event('open'));
   }
 
   /**
