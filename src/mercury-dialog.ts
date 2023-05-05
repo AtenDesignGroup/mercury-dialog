@@ -71,8 +71,8 @@ export class MercuryDialog extends LitElement {
       width: var(--me-dialog-width, var(--me-dialog-width-default, fit-content));
       height: var(--me-dialog-height, var(--me-dialog-height-default, fit-content));
       min-width: var(--me-dialog-min-width, min-content);
-      max-width: calc(100vw - var(--me-dialog-viewport-offset, 40px));
-      max-height: calc(100vh - var(--me-dialog-viewport-offset, 40px));
+      max-width: calc(100vw - var(--me-dialog-viewport-offset, 80px));
+      max-height: calc(100vh - var(--me-dialog-viewport-offset, 80px));
       z-index: 1000;
     }
 
