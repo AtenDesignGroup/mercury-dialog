@@ -87,6 +87,7 @@ export class MercuryDialog extends LitElement {
     dialog[open] {
       display: flex;
       flex-direction: column;
+      justify-content: stretch;
     }
 
     dialog[data-dock='left'] {
@@ -143,6 +144,7 @@ export class MercuryDialog extends LitElement {
       position: sticky;
       top: 0;
     }
+
     dialog.is-moveable header {
       cursor: grab;
     }
@@ -158,6 +160,7 @@ export class MercuryDialog extends LitElement {
       background-color: var(--me-dialog-main-background-color, #fff);
       padding: var(--me-dialog-main-space-inset-y, var(--me-space-inset-y, 20px)) var(--me-dialog-main-space-inset-y, var(--me-space-inset-y, 20px));
       overflow-y: auto;
+      flex: 1;
     }
 
     .buttons {

@@ -59,11 +59,32 @@
        </tr>
      
        <tr>
-         <td>closeButton</td><td></td><td>boolean</td><td>true</td>
+         <td>push</td><td>True if a docked dialog should push the page contents over
+rather than overlaying.</td><td>boolean</td><td>false</td>
+       </tr>
+     
+       <tr>
+         <td>dockable</td><td>The location in which the dialog should be docked.</td><td>boolean</td><td>false</td>
+       </tr>
+     
+       <tr>
+         <td>hide-close-button</td><td></td><td>boolean</td><td>false</td>
        </tr>
      
        <tr>
          <td>backdropOpacity</td><td></td><td>number</td><td>1</td>
+       </tr>
+     
+       <tr>
+         <td>height</td><td></td><td>number</td><td>400</td>
+       </tr>
+     
+       <tr>
+         <td>width</td><td></td><td>number</td><td>400</td>
+       </tr>
+     
+       <tr>
+         <td>resizable</td><td>Whether or not the dialog is resizable.</td><td>boolean</td><td>false</td>
        </tr>
      
        <tr>
@@ -96,11 +117,40 @@
        </tr>
      
        <tr>
-         <td>closeButton</td><td>closeButton</td><td></td><td>boolean</td><td>true</td>
+         <td>push</td><td>push</td><td>True if a docked dialog should push the page contents over
+rather than overlaying.</td><td>boolean</td><td>false</td>
+       </tr>
+     
+       <tr>
+         <td>dockable</td><td>dockable</td><td>The location in which the dialog should be docked.</td><td>boolean</td><td>false</td>
+       </tr>
+     
+       <tr>
+         <td>hideCloseButton</td><td>hide-close-button</td><td></td><td>boolean</td><td>false</td>
        </tr>
      
        <tr>
          <td>backdropOpacity</td><td>backdropOpacity</td><td></td><td>number</td><td>1</td>
+       </tr>
+     
+       <tr>
+         <td>returnValue</td><td></td><td></td><td>string</td><td>''</td>
+       </tr>
+     
+       <tr>
+         <td>height</td><td>height</td><td></td><td>number</td><td>400</td>
+       </tr>
+     
+       <tr>
+         <td>width</td><td>width</td><td></td><td>number</td><td>400</td>
+       </tr>
+     
+       <tr>
+         <td>resizable</td><td>resizable</td><td>Whether or not the dialog is resizable.</td><td>boolean</td><td>false</td>
+       </tr>
+     
+       <tr>
+         <td>_dialogInteraction</td><td></td><td></td><td></td><td></td>
        </tr>
      
        <tr>
@@ -120,6 +170,14 @@
        </tr>
      
        <tr>
+         <td>_dragStartHeight</td><td></td><td></td><td>number</td><td>0</td>
+       </tr>
+     
+       <tr>
+         <td>_dragStartWidth</td><td></td><td></td><td>number</td><td>0</td>
+       </tr>
+     
+       <tr>
          <td>_offsetTop</td><td></td><td></td><td>number</td><td>0</td>
        </tr>
      
@@ -128,11 +186,28 @@
        </tr>
      
        <tr>
+         <td>_resizeDirection</td><td></td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
+         <td>_onDock</td><td></td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
+         <td>_onUnDock</td><td></td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
          <td>_onDragMouseUp</td><td></td><td></td><td></td><td></td>
        </tr>
      
        <tr>
-         <td>_onMouseMove</td><td></td><td></td><td></td><td></td>
+         <td>_onDragMouseMove</td><td></td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
+         <td>_pushBody</td><td></td><td>Sets padding on the <body> element for to compensate for any
+push enabled docked dialogs.</td><td></td><td></td>
        </tr>
      
    </table>
@@ -143,6 +218,18 @@
      <tr>
        <th>Name</th><th>Parameters</th><th>Description</th><th>Return</th>
      </tr>
+     
+       <tr>
+         <td>_getResizeDirection</td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
+         <td>_handleClose</td><td></td><td>Mimic the HTMLDialogElement close event.</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>_handleCancel</td><td></td><td>Mimic the HTMLDialogElement cancel event.</td><td></td>
+       </tr>
      
        <tr>
          <td>showModal</td><td></td><td>showModal
@@ -159,6 +246,11 @@ Shows the dialog.</td><td></td>
 Closes the dialog.</td><td></td>
        </tr>
      
+       <tr>
+         <td>isDocked</td><td></td><td>isDocked
+True if docked.</td><td></td>
+       </tr>
+     
    </table>
  
        
@@ -167,6 +259,14 @@ Closes the dialog.</td><td></td>
      <tr>
        <th>Name</th><th>Description</th>
      </tr>
+     
+       <tr>
+         <td>close</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>cancel</td><td></td>
+       </tr>
      
        <tr>
          <td>count-changed</td><td>Indicates when the count changes</td>
