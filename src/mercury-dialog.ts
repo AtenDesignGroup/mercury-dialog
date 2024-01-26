@@ -443,6 +443,16 @@ export class MercuryDialog extends LitElement {
     this.dispatchEvent(new Event('cancel'));
   }
 
+  async _keydownHandler(event: Event) {
+    if ((event as KeyboardEvent).code === 'Escape') {
+      const rootElement = this.getRootNode() as Document;
+      const domElement = rootElement.querySelector(`#${this.id}`);
+      if (domElement && !this.hideCloseButton && domElement.contains(rootElement.activeElement)) {
+        this._handleClose();
+      }
+    }
+  }
+
   override render() {
     return html`
       <dialog
@@ -523,6 +533,11 @@ export class MercuryDialog extends LitElement {
   override updated(changedProperties) {
     if (changedProperties.has('dock') || changedProperties.has('push') || changedProperties.has('modal')) {
       this._pushBody();
+    }
+    if (this.open) {
+      this.getRootNode().addEventListener('keydown', (e: Event) => this._keydownHandler(e));
+    } else {
+      this.getRootNode().removeEventListener('keydown', (e: Event) => this._keydownHandler(e));
     }
   }
 
