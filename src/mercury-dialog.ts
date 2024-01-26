@@ -160,7 +160,7 @@ export class MercuryDialog extends LitElement {
       background-color: var(--me-dialog-main-background-color, #fff);
       padding: var(--me-dialog-main-space-inset-y, var(--me-space-inset-y, 20px)) var(--me-dialog-main-space-inset-y, var(--me-space-inset-y, 20px));
       overflow-y: auto;
-      flex: 1;
+      flex: 1 1 fit-content;
     }
 
     .buttons {
