@@ -39,7 +39,7 @@ header {
   color: white;
 }
 
-footer {
+body > footer {
   width: 100%;
   min-height: 120px;
   background: gray;

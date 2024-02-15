@@ -23,6 +23,9 @@ description: Modal
 <button id="openDialogButton">Open Dialog</button>
 <mercury-dialog id="mercuryDialog" open modal dialogTitle="My Dialog">
   <p>Maybe in order to understand mankind, we have to look at the word itself: "Mankind". Basically, it's made up of two separate words - "mank" and "ind". What do these words mean ? It's a mystery, and that's why so is mankind.</p>
+  <footer>
+    <p>Powered by Mercury Dialog</p>
+  </footer>
 </mercury-dialog>
 ```
 
