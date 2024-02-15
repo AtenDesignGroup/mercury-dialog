@@ -2,6 +2,7 @@
 /lib/
 /test/
 custom-elements.json
+.DS_Store
 # top level source
 mercury-dialog.js
 mercury-dialog.js.map
