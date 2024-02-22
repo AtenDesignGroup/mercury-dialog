@@ -66,7 +66,7 @@ export class MercuryDialog extends LitElement {
       padding: 0;
       position: fixed;
       margin: auto;
-      inset: 0;
+      inset: var(--me-dialog-position-top, 0px) var(--me-dialog-position-right, 0px) var(--me-dialog-position-bottom, 0px) var(--me-dialog-position-left, 0px);
       overflow: auto;
       width: var(--me-dialog-width, var(--me-dialog-width-default, fit-content));
       height: var(--me-dialog-height, var(--me-dialog-height-default, fit-content));
@@ -92,35 +92,35 @@ export class MercuryDialog extends LitElement {
 
     dialog[data-dock='left'] {
       height: auto;
-      inset: 0 auto 0 0;
+      inset: var(--me-dialog-position-top, 0px) var(--me-dialog-position-right, auto) var(--me-dialog-position-bottom, 0px) var(--me-dialog-position-left, 0px);
       margin: 0 auto 0 0;
-      max-height: none;
-      max-width: 100vw;
+      max-height: 100dvh;
+      max-width: 100dvw;
       width: var(--me-dialog-dock-width, var(--me-dialog-width-default, 400px));
     }
 
     dialog[data-dock='right'] {
       height: auto;
-      inset: 0 0 0 auto;
+      inset: var(--me-dialog-position-top, 0px) var(--me-dialog-position-right, 0px) var(--me-dialog-position-bottom, 0px) var(--me-dialog-position-left, auto);
       margin: 0 0 0 auto;
-      max-height: none;
-      max-width: 100vw;
+      max-height: 100dvh;
+      max-width: 100dvw;
       width: var(--me-dialog-dock-width, var(--me-dialog-width-default, 400px));
     }
 
     dialog[data-dock='bottom'] {
-      inset: auto 0 0 0;
+      inset: var(--me-dialog-position-top, auto) var(--me-dialog-position-right, 0px) var(--me-dialog-position-bottom, 0px) var(--me-dialog-position-left, 0px);
       margin: auto 0 0 0;
       width: auto;
-      max-width: 100vw;
+      max-width: 100dvw;
       height: var(--me-dialog-dock-height, var(--me-dialog-height-default, 400px));
     }
 
     dialog[data-dock='top'] {
-      inset: 0 0 auto 0;
+      inset: var(--me-dialog-position-top, 0px) var(--me-dialog-position-right, 0px) var(--me-dialog-position-bottom, auto) var(--me-dialog-position-left, 0px);
       margin: 0 0 auto 0;
       width: auto;
-      max-width: 100vw;
+      max-width: 100dvw;
       height: var(--me-dialog-dock-height, var(--me-dialog-height-default, 400px));
     }
 
