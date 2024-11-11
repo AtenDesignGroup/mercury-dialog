@@ -683,7 +683,7 @@ export class MercuryDialog extends LitElement {
             document.documentElement.style.setProperty('--me-dialog-dock-height', `${this.height}px`);
             break;
           case ResizeDirection.W:
-            this.width = Math.min(this._dragStartWidth - diffX, window.innerWidth);
+            this.width = Math.max(0, Math.min(this._dragStartWidth - diffX, window.innerWidth));
             document.documentElement.style.setProperty('--me-dialog-dock-width', `${this.width}px`);
             break;
           default:
