@@ -96,7 +96,7 @@ export class MercuryDialog extends LitElement {
       margin: 0 auto 0 0;
       max-height: 100dvh;
       max-width: 100dvw;
-      width: var(--me-dialog-dock-width, var(--me-dialog-width-default, 400px));
+      width: var(--me-dialog-dock-left-width, var(--me-dialog-width-default, 400px));
     }
 
     dialog[data-dock='right'] {
@@ -105,7 +105,7 @@ export class MercuryDialog extends LitElement {
       margin: 0 0 0 auto;
       max-height: 100dvh;
       max-width: 100dvw;
-      width: var(--me-dialog-dock-width, var(--me-dialog-width-default, 400px));
+      width: var(--me-dialog-dock-right-width, var(--me-dialog-width-default, 400px));
     }
 
     dialog[data-dock='bottom'] {
@@ -270,8 +270,6 @@ export class MercuryDialog extends LitElement {
       bottom: 0;
     }
 
-    footer ::slotted(button) {
-    }
     dialog.is-moveable footer {
       cursor: grab;
     }
@@ -370,6 +368,9 @@ export class MercuryDialog extends LitElement {
 
   @property({type: Number, reflect: true})
   private width = 400;
+
+  @property({type: Number, reflect: true})
+  private minWidth = 200;
 
   /**
    * Whether or not the dialog is resizable.
@@ -604,9 +605,8 @@ export class MercuryDialog extends LitElement {
     dialog.style.removeProperty('height');
     dialog.style.removeProperty('width');
     this.dock = direction;
-
-    document.documentElement.style.setProperty('--me-dialog-dock-height', `${this.height}px`);
-    document.documentElement.style.setProperty('--me-dialog-dock-width', `${this.width}px`);
+    document.documentElement.style.setProperty(`--me-dialog-dock-${direction}-height`, `${this.height}px`);
+    document.documentElement.style.setProperty(`--me-dialog-dock-${direction}-width`, `${this.width}px`);
     this._pushBody();
   };
 
@@ -675,16 +675,22 @@ export class MercuryDialog extends LitElement {
             document.documentElement.style.setProperty('--me-dialog-dock-height', `${this.height}px`);
             break;
           case ResizeDirection.E:
-            this.width = Math.min(this._dragStartWidth + diffX, window.innerWidth);
-            document.documentElement.style.setProperty('--me-dialog-dock-width', `${this.width}px`);
+            this.width = Math.max(
+              this.minWidth,
+              Math.min(this._dragStartWidth + diffX, window.innerWidth),
+            );
+            document.documentElement.style.setProperty(`--me-dialog-dock-${this.dock}-width`, `${this.width}px`);
             break;
           case ResizeDirection.S:
             this.height = Math.min(this._dragStartHeight + diffY, window.innerHeight);
-            document.documentElement.style.setProperty('--me-dialog-dock-height', `${this.height}px`);
+            document.documentElement.style.setProperty(`--me-dialog-dock-${this.dock}-height`, `${this.height}px`);
             break;
           case ResizeDirection.W:
-            this.width = Math.max(0, Math.min(this._dragStartWidth - diffX, window.innerWidth));
-            document.documentElement.style.setProperty('--me-dialog-dock-width', `${this.width}px`);
+            this.width = Math.max(
+              this.minWidth,
+              Math.max(0, Math.min(this._dragStartWidth - diffX, window.innerWidth)),
+            );
+            document.documentElement.style.setProperty(`--me-dialog-dock-${this.dock}-width`, `${this.width}px`);
             break;
           default:
             break;
@@ -706,16 +712,16 @@ export class MercuryDialog extends LitElement {
     if (this.open && this.push) {
       switch (this.dock) {
         case 'top':
-          padding.top = 'padding-top: var(--me-dialog-offset-top, var(--me-dialog-dock-height)) !important;';
+          padding.top = 'padding-top: var(--me-dialog-offset-top, var(--me-dialog-dock-top-height)) !important;';
           break;
         case 'right':
-          padding.right = 'padding-right: var(--me-dialog-offset-right, var(--me-dialog-dock-width)) !important;';
+          padding.right = 'padding-right: var(--me-dialog-offset-right, var(--me-dialog-dock-right-width)) !important;';
           break;
         case 'bottom':
-          padding.bottom = 'padding-bottom: var(--me-dialog-offset-bottom, var(--me-dialog-dock-height)) !important;';
+          padding.bottom = 'padding-bottom: var(--me-dialog-offset-bottom, var(--me-dialog-dock-bottom-height)) !important;';
           break;
         case 'left':
-          padding.left = 'padding-left: var(--me-dialog-offset-left, var(--me-dialog-dock-width)) !important;';
+          padding.left = 'padding-left: var(--me-dialog-offset-left, var(--me-dialog-dock-left-width)) !important;';
           break;
         default:
           break;
