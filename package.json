@@ -1,6 +1,6 @@
 {
   "name": "mercury-dialog",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "A dialog web component for Mercury Editor",
   "main": "mercury-dialog.js",
   "module": "mercury-dialog.js",
